@@ -268,7 +268,7 @@ Render 대시보드에서 **New → Web Service** 로 직접 만들면 됩니다
 
 | 항목 | 값 |
 |---|---|
-| Repository | `kongjoonqq-bit/Apex-OTT` |
+| Repository | `kongjoonll-bit/Apex-OTT` |
 | Language / Runtime | `Python 3` |
 | Build Command | `pip install -r requirements.txt` |
 | Start Command | `python main.py` |
