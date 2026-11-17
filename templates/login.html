@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>APEX OTT · 관리자 로그인</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+<body>
+  <div class="login-wrap">
+    <form class="login-card" method="post" autocomplete="off">
+      <div class="login-brand">
+        <div class="mark">A</div>
+        <div>
+          <h1>APEX OTT</h1>
+          <p>PREMIUM OTT STORE</p>
+        </div>
+      </div>
+
+      <h2>관리자 로그인</h2>
+      <p class="hint">상품 지급과 주문 관리를 위해 비밀번호를 입력해 주세요.</p>
+
+      {% if error %}
+      <div class="login-error">{{ error }}</div>
+      {% endif %}
+
+      <div class="login-field">
+        <label for="password">비밀번호</label>
+        <input class="input" type="password" id="password" name="password"
+               placeholder="관리자 비밀번호" autofocus required>
+      </div>
+
+      <button class="btn primary" type="submit" style="width:100%; padding:11px;">로그인</button>
+
+      <div class="login-foot">APEX OTT · ADMIN CONSOLE</div>
+    </form>
+  </div>
+</body>
+</html>

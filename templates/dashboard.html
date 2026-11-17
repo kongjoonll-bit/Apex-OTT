@@ -1,0 +1,433 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>APEX OTT · 관리자</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">A</div>
+      <div>
+        <strong>APEX OTT</strong>
+        <span>PREMIUM OTT STORE</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-label">OPERATIONS</div>
+      <button class="active" data-view="overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        개요
+      </button>
+      <button data-view="orders">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12a1 1 0 0 1 1 1v17l-3-2-3 2-3-2-3 2V4a1 1 0 0 1 1-1Z"/><path d="M9 8h6M9 12h6"/></svg>
+        주문
+        <span class="count" id="nav-pending">0</span>
+      </button>
+      <button data-view="products">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4.5 7.8 7.5 4.4 7.5-4.4M12 21v-8.8"/></svg>
+        상품
+      </button>
+      <button data-view="users">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 4.5a3 3 0 0 1 0 6M17.5 15c2 .5 3.5 2.2 3.5 5"/></svg>
+        유저
+      </button>
+      <button data-view="charges">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19"/><path d="M6.5 15h4"/></svg>
+        충전
+        <span class="count" id="nav-charges">0</span>
+      </button>
+      <button data-view="reviews">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg>
+        후기
+      </button>
+      <div class="nav-label">SYSTEM</div>
+      <button data-view="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+        설정
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="status-line"><span class="dot" id="bot-dot"></span><span id="bot-status">봇 확인 중</span></div>
+      <div class="sub">APEX OTT · ADMIN CONSOLE</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1 id="view-title">개요</h1>
+        <p id="view-sub">주문과 지급 현황을 한눈에 확인합니다.</p>
+      </div>
+      <div class="spacer"></div>
+      <span class="pill"><span class="dot" id="top-dot"></span><span id="top-status">확인 중</span></span>
+      <a class="icon-btn" href="{{ url_for('logout') }}" title="로그아웃">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 17l5-5-5-5M15 12H3"/></svg>
+      </a>
+    </div>
+
+    <section class="view active" id="view-overview">
+      <div class="grid stats">
+        <div class="stat gold">
+          <div class="label">지급 대기</div>
+          <div class="value" id="stat-pending">-</div>
+          <div class="sub">관리자 확인이 필요한 주문</div>
+        </div>
+        <div class="stat">
+          <div class="label">오늘 지급 완료</div>
+          <div class="value" id="stat-today">-</div>
+          <div class="sub" id="stat-today-sub">-</div>
+        </div>
+        <div class="stat violet">
+          <div class="label">누적 매출</div>
+          <div class="value" id="stat-revenue">-</div>
+          <div class="sub">지급 완료 기준</div>
+        </div>
+        <div class="stat">
+          <div class="label">전체 유저</div>
+          <div class="value" id="stat-users">-</div>
+          <div class="sub" id="stat-points">-</div>
+        </div>
+      </div>
+
+      <div class="quick-grid">
+        <button class="quick" onclick="switchView('settings')">
+          <span class="quick-icon">⚙️</span>
+          <span><strong>채널 설정</strong><small>로그 · 티켓 · 후기 채널</small></span>
+        </button>
+        <button class="quick" onclick="switchView('settings')">
+          <span class="quick-icon">🖼️</span>
+          <span><strong>패널 / 배너</strong><small>설치 채널과 이미지 변경</small></span>
+        </button>
+        <a class="quick" href="/api/db/download">
+          <span class="quick-icon">💾</span>
+          <span><strong>DB 백업</strong><small>SQLite 파일 다운로드</small></span>
+        </a>
+        <button class="quick" onclick="switchView('reviews')">
+          <span class="quick-icon">⭐</span>
+          <span><strong>후기 확인</strong><small>별점과 구매자 후기</small></span>
+        </button>
+      </div>
+
+      <div class="split">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>지급 대기 주문</h2>
+            <span class="hint" id="pending-hint"></span>
+            <div class="spacer"></div>
+            <button class="btn small" onclick="loadOverview()">새로고침</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>주문번호</th><th>상품</th><th>구매자</th><th>금액</th><th>주문 시각</th><th></th></tr></thead>
+              <tbody id="pending-body"><tr><td colspan="6" class="empty">불러오는 중…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-head"><h2>최근 지급</h2><div class="spacer"></div><button class="btn small ghost" onclick="switchView('orders','delivered')">전체</button></div>
+            <div class="list" id="recent-list"><div class="skeleton">불러오는 중…</div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>대기 충전</h2><div class="spacer"></div><button class="btn small ghost" onclick="switchView('charges')">전체</button></div>
+            <div class="list" id="charge-list"><div class="skeleton">불러오는 중…</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-orders">
+      <div class="panel">
+        <div class="toolbar">
+          <div class="tabs" id="order-tabs">
+            <button class="active" data-status="paid">지급 대기</button>
+            <button data-status="delivered">지급 완료</button>
+            <button data-status="cancelled">취소</button>
+            <button data-status="all">전체</button>
+          </div>
+          <div class="spacer"></div>
+          <button class="btn small" onclick="loadOrders()">새로고침</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>주문번호</th><th>상품</th><th>구매자</th><th>금액</th><th>상태</th><th>시간</th><th></th></tr></thead>
+            <tbody id="orders-body"><tr><td colspan="7" class="empty">불러오는 중…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-products">
+      <div class="panel">
+        <div class="toolbar">
+          <div class="search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input class="input" id="product-search" placeholder="상품명 검색" oninput="renderProducts()">
+          </div>
+          <div class="spacer"></div>
+          <button class="btn primary" onclick="openProductModal()">상품 추가</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>상품</th><th>카테고리</th><th>가격</th><th>재고</th><th>판매</th><th></th></tr></thead>
+            <tbody id="products-body"><tr><td colspan="6" class="empty">불러오는 중…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-users">
+      <div class="panel">
+        <div class="toolbar">
+          <div class="search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input class="input" id="user-search" placeholder="닉네임 또는 유저 ID" oninput="debouncedUsers()">
+          </div>
+          <div class="spacer"></div>
+          <span class="hint" id="user-count"></span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>유저</th><th>유저 ID</th><th>보유 포인트</th><th>누적 결제</th><th>가입일</th><th></th></tr></thead>
+            <tbody id="users-body"><tr><td colspan="6" class="empty">불러오는 중…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-charges">
+      <div class="panel">
+        <div class="toolbar">
+          <div class="tabs" id="charge-tabs">
+            <button class="active" data-status="pending">대기</button>
+            <button data-status="completed">완료</button>
+            <button data-status="all">전체</button>
+          </div>
+          <div class="spacer"></div>
+          <button class="btn small" onclick="loadCharges()">새로고침</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>신청자</th><th>입금자명</th><th>금액</th><th>상태</th><th>신청 시각</th><th></th></tr></thead>
+            <tbody id="charges-body"><tr><td colspan="6" class="empty">불러오는 중…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-reviews">
+      <div class="panel">
+        <div class="toolbar">
+          <span class="hint" id="review-summary">후기를 불러오는 중…</span>
+          <div class="spacer"></div>
+          <button class="btn small" onclick="loadReviews()">새로고침</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>상품</th><th>작성자</th><th>별점</th><th>후기</th><th>작성 시각</th></tr></thead>
+            <tbody id="reviews-body"><tr><td colspan="5" class="empty">불러오는 중…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-settings">
+      <div class="settings-grid" style="display:grid; grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); gap:16px;">
+        <div class="panel">
+          <div class="panel-head"><h2>운영 설정</h2><span class="hint">Discord 채널을 직접 선택</span></div>
+          <div class="panel-body">
+            <div class="form-grid">
+              <div class="field"><label>구매 로그 채널</label><select class="select" id="set-purchase_log_channel_id"></select><input class="input" id="id-purchase_log_channel_id" placeholder="또는 채널 ID 직접 입력" inputmode="numeric" style="margin-top:6px"></div>
+              <div class="field"><label>충전 로그 채널</label><select class="select" id="set-charge_log_channel_id"></select><input class="input" id="id-charge_log_channel_id" placeholder="또는 채널 ID 직접 입력" inputmode="numeric" style="margin-top:6px"></div>
+              <div class="field"><label>티켓 카테고리</label><select class="select" id="set-ticket_category_id"></select><input class="input" id="id-ticket_category_id" placeholder="또는 카테고리 ID 직접 입력" inputmode="numeric" style="margin-top:6px"></div>
+              <div class="field"><label>후기 채널</label><select class="select" id="set-review_channel_id"></select><input class="input" id="id-review_channel_id" placeholder="또는 채널 ID 직접 입력" inputmode="numeric" style="margin-top:6px"></div>
+              <div class="field"><label>공지 채널</label><select class="select" id="set-notice_channel_id"></select><input class="input" id="id-notice_channel_id" placeholder="또는 채널 ID 직접 입력" inputmode="numeric" style="margin-top:6px"></div>
+              <div class="field"><label>티켓 알림 역할</label><select class="select" id="set-ticket_ping_role_id"></select><input class="input" id="id-ticket_ping_role_id" placeholder="또는 역할 ID 직접 입력" inputmode="numeric" style="margin-top:6px"></div>
+              <div class="field"><label>전달 제한 시간 (분)</label><input class="input" id="set-delivery_window_minutes" placeholder="30"></div>
+              <div class="field">
+                <label class="switch"><input type="checkbox" id="set-card_image_enabled"> 구매·지급 카드 이미지 사용</label>
+                <div class="desc">끄면 텍스트 임베드만 전송됩니다.</div>
+              </div>
+            </div>
+            <button class="btn primary" onclick="saveSettings()">저장</button>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-head"><h2>자판기 패널</h2><span class="hint">채널·배너 이미지</span></div>
+            <div class="panel-body">
+              <div class="field">
+                <label>패널 설치 채널</label>
+                <select class="select" id="panel-channel-select"></select>
+                <input class="input" id="id-panel_channel_id" placeholder="또는 채널 ID 직접 입력" inputmode="numeric" style="margin-top:6px">
+              </div>
+              <div class="field">
+                <label>배너 이미지 URL</label>
+                <input class="input" id="panel-banner-url" placeholder="https://... (비우면 이미지 없음)">
+                <div class="desc">이미지가 패널 하단에 표시됩니다.</div>
+                <img id="panel-banner-preview" alt="" style="display:none; width:100%; margin-top:10px; border-radius:10px; border:1px solid var(--line);">
+              </div>
+              <button class="btn primary" onclick="installPanel()">패널 설치 / 새로고침</button>
+              <div class="desc" style="margin-top:8px;">선택한 채널에 패널을 새로 만들거나 기존 패널을 갱신합니다.</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h2>데이터베이스</h2><span class="hint">SQLite</span></div>
+            <div class="panel-body">
+              <p class="muted" style="margin-top:0;">주문·유저·포인트·후기 데이터가 담긴 DB 파일을 내려받습니다.</p>
+              <a class="btn primary" href="/api/db/download">DB 파일 다운로드</a>
+              <div class="desc" style="margin-top:10px;">디스코드에서는 <code>/db보내기</code> 로 백업 파일을 받을 수 있습니다.</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h2>입금 계좌</h2></div>
+            <div class="panel-body">
+              <div class="field"><label>은행</label><input class="input" id="set-bank_name" placeholder="토스뱅크"></div>
+              <div class="field"><label>계좌번호</label><input class="input" id="set-bank_account" placeholder="1001-0000-0000"></div>
+              <div class="field"><label>예금주</label><input class="input" id="set-bank_holder" placeholder="홍길동"></div>
+              <button class="btn primary" onclick="saveSettings()">저장</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h2>입금 자동 감지</h2></div>
+            <div class="panel-body">
+              <div class="field">
+                <label>웹훅 URL</label>
+                <div class="copy-row">
+                  <input class="input" id="webhook-url" readonly value="{{ request.host_url }}api/deposit-webhook?key={{ webhook_key }}">
+                  <button class="btn small" onclick="copyWebhook()">복사</button>
+                </div>
+                <div class="desc">폰 Tasker에서 토스 알림을 이 URL로 POST 하면 자동 충전됩니다.</div>
+              </div>
+              <div class="note">
+                <b>Tasker 설정</b><br>
+                요청 본문: <code>{"title":"%antitle","body":"%antext"}</code><br>
+                Content-Type: <code>application/json</code>
+              </div>
+              <div style="display:flex; gap:8px; margin-top:14px;">
+                <button class="btn small" onclick="rotateWebhook()">키 재발급</button>
+                <button class="btn small" onclick="testWebhook()">파싱 테스트</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h2>보안</h2></div>
+            <div class="panel-body">
+              <div class="field"><label>새 비밀번호</label><input class="input" type="password" id="set-new-password" placeholder="변경할 때만 입력"></div>
+              <button class="btn" onclick="changePassword()">비밀번호 변경</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- 지급 모달 -->
+<div class="overlay" id="deliver-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>상품 지급</h3><p id="deliver-sub">전달할 정보를 입력하면 구매자 DM으로 전송됩니다.</p></div>
+      <button class="icon-btn x" onclick="closeModal('deliver-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="seg" id="deliver-types">
+        <button class="active" data-type="idpw">ID · PW</button>
+        <button data-type="key">KEY</button>
+        <button data-type="note">기타</button>
+      </div>
+      <div id="deliver-idpw">
+        <div class="field"><label>아이디</label><input class="input" id="deliver-id" placeholder="계정 아이디"></div>
+        <div class="field"><label>비밀번호</label><input class="input" id="deliver-pw" placeholder="계정 비밀번호"></div>
+      </div>
+      <div id="deliver-key" class="hidden">
+        <div class="field"><label>KEY / 코드</label><textarea class="textarea" id="deliver-key-value" placeholder="전달할 키 또는 교환 코드"></textarea></div>
+      </div>
+      <div id="deliver-note" class="hidden">
+        <div class="field"><label>전달 내용</label><textarea class="textarea" id="deliver-note-value" placeholder="링크, 안내문 등"></textarea></div>
+      </div>
+      <div class="field"><label>메시지 (선택)</label><textarea class="textarea" id="deliver-message" placeholder="구매자에게 함께 전달할 안내 문구"></textarea></div>
+      <div class="note">전송 시 구매자 DM으로 <b>이미지 카드 + 클릭 복사 코드블록</b>이 함께 전달됩니다.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal('deliver-modal')">취소</button>
+      <button class="btn primary" id="deliver-submit" onclick="submitDeliver()">지급 전송</button>
+    </div>
+  </div>
+</div>
+
+<!-- 상품 모달 -->
+<div class="overlay" id="product-modal">
+  <div class="modal wide">
+    <div class="modal-head">
+      <div><h3 id="product-modal-title">상품 추가</h3><p>카테고리를 비우면 기타로 분류됩니다.</p></div>
+      <button class="icon-btn x" onclick="closeModal('product-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field full"><label>상품명</label><input class="input" id="product-name" placeholder="넷플릭스 프리미엄 1개월"></div>
+        <div class="field"><label>카테고리</label><input class="input" id="product-category" placeholder="넷플릭스"></div>
+        <div class="field"><label>가격 (P)</label><input class="input" id="product-price" type="number" min="1" placeholder="12000"></div>
+        <div class="field"><label>재고</label><input class="input" id="product-stock" type="number" min="0" placeholder="5"></div>
+        <div class="field"><label>재고 설정</label><label class="switch"><input type="checkbox" id="product-unlimited" checked> 재고 무제한</label></div>
+        <div class="field"><label>판매 여부</label><label class="switch"><input type="checkbox" id="product-active" checked> 판매 중</label></div>
+        <div class="field full"><label>설명</label><textarea class="textarea" id="product-description" placeholder="4K UHD · 4인 프로필 · 1개월"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal('product-modal')">취소</button>
+      <button class="btn primary" onclick="submitProduct()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 포인트 모달 -->
+<div class="overlay" id="points-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div><h3>포인트 조정</h3><p id="points-sub">-</p></div>
+      <button class="icon-btn x" onclick="closeModal('points-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>금액 (P)</label><input class="input" id="points-amount" type="number" placeholder="지급은 양수, 차감은 음수"></div>
+      <div class="field"><label>사유</label><input class="input" id="points-reason" placeholder="예: 입금 확인"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal('points-modal')">취소</button>
+      <button class="btn primary" onclick="submitPoints()">적용</button>
+    </div>
+  </div>
+</div>
+
+<!-- 확인 모달 -->
+<div class="overlay" id="confirm-modal">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-head"><div><h3 id="confirm-title">확인</h3><p id="confirm-text">-</p></div></div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal('confirm-modal')">취소</button>
+      <button class="btn danger" id="confirm-ok">확인</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toasts"></div>
+<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+</body>
+</html>
+
+
+
+
+
